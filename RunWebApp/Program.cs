@@ -1,7 +1,17 @@
+
+using Microsoft.EntityFrameworkCore;
+using RunWebApp.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.AddControllers();
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+
 
 var app = builder.Build();
 
@@ -13,6 +23,12 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+if (args.Length == 1 && args[0].ToLower() == "seeddata")
+{
+    //await Seed.SeedUsersAndRolesAsync(app);
+    Seed.SeedData(app);
+}
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
@@ -21,5 +37,6 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapRazorPages();
+app.MapControllers();
 
 app.Run();
