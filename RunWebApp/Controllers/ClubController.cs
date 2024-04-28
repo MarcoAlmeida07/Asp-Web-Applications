@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using RunWebApp.Data;
 
 namespace RunWebApp.Controllers
@@ -20,6 +21,13 @@ namespace RunWebApp.Controllers
         {
             var clubs = _context.Clubs.ToList();
             return View(clubs);
+        }
+
+        [HttpGet("Detail/{id}")]
+        public IActionResult Detail(int id)
+        {
+            var club = _context.Clubs.Include(a=>a.Address).FirstOrDefault(c => c.Id == id);
+            return View(club);
         }
     }
 }
